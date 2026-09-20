@@ -455,27 +455,19 @@ class cls_frame():
         frame = self.crop_frame(frame, x_tuple, y_tuple)
 
         height, width, _ = frame.shape
-        
-        # 1. Crop to the bottom half of the screen. 
-        # We only care about the graph at the bottom, which prevents 
-        # accidentally triggering on the 2D ultrasound image at the top.
+
         bottom_half = frame[int(height * 0.5):, :]
         
-        # 2. Convert to HSV for accurate color detection
+
         hsv = cv2.cvtColor(bottom_half, cv2.COLOR_BGR2HSV)
         
-        # 3. Define the HSV color range for the Golden/Orange waveform
-        # In OpenCV, Hue 10 to 35 covers orange to golden-yellow.
+
         lower_gold = np.array([10, 80, 80])
         upper_gold = np.array([35, 255, 255])
         
         gold_mask = cv2.inRange(hsv, lower_gold, upper_gold)
         
-        # 4. Count the matching pixels
         gold_pixels = cv2.countNonZero(gold_mask)
-        
-        # 5. Set a high threshold. 
-
         
         if gold_pixels > SPECTRAL_THRESHOLD:
             return True
@@ -616,7 +608,46 @@ class cls_frame():
             dico['getting_coord_duration'].append(o.getting_coord_duration)
             dico['classification_duration'].append(o.classification_duration)
             dico['video_duration'].append(o.get_duration_fast())
+
+    @staticmethod
+    def eval(curretn_path:str, outputs_folder:str):
+        folder_path = Path(curretn_path)
+        
+        for sub_folder in sorted(folder_path.iterdir()):
+            tmp = Path(outputs_folder) / f"{str(sub_folder.name)}"
+            tmp.mkdir(parents=True, exist_ok=True)
+            o = cls_frame(current_folder=sub_folder, output_folder=tmp)
+            o.create_folders()
+            o.get_best_coords()
+            for file in sorted(o.current_folder.iterdir()):
+                frame = cv2.imread(str(file))
+                            
+                if o.detect_measurement_mode(frame):
+                    o.save_measurement_frame(frame,frame_name= str(file.name))
+                            
+                                
+                elif o.detect_non_usable_frame(frame):
+                    o.save_non_usable_frame(frame,frame_name=str(file.name))
             
+                elif o.detect_split_frame(frame): 
+                    o.save_split_frame(frame,frame_name=str(file.name))
+            
+                elif o.detect_pw_doppler(frame): 
+                    o.save_pw_doppler_frame(frame,frame_name=str(file.name))
+            
+                elif o.detect_doppler_mode(frame):
+                    o.save_doppler_mode_frame(frame, frame_name=str(file.name))
+            
+                else:
+                    o.save_b_mode_frame(frame, frame_name=str(file.name))
+
+
+
+        
+
+            
+
+
 
   
         

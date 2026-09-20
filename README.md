@@ -172,10 +172,4 @@ HSV is used instead of BGR because it separates chromatic information (hue) from
 - **Single-frame ROI** — the crop rectangle is computed once from the brightest frame; probe/window resizing mid-exam would invalidate it for the rest of the video.
 - **Bootstrapping a learned model** — once enough auto-labeled frames accumulate, this output becomes ideal training data for a lightweight supervised classifier (e.g., a CNN) to handle edge cases the hand-crafted rules miss.
 - **Planned ROI mitigations**: adaptive binarization (e.g., Otsu's method) instead of a fixed threshold, a resolution-relative morphological kernel size, and a per-vendor calibration profile selected automatically from video metadata.
-## Repository
- 
-[github.com/ilyasbejja/ultrasound_exploration_model](https://github.com/ilyasbejja/ultrasound_exploration_model)
- 
-## License
- 
-Add your license here.
+

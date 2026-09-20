@@ -2,7 +2,7 @@
  
 A rule-based computer vision pipeline that converts raw ultrasound videos into a clean, mode-labeled image dataset — with **zero manual annotation**.
  
-Built at **DEEPECHO** · Author: Ilyas Bejja · Supervisor: Mohammed Najid
+· Author: Ilyas Bejja 
  
 ---
  
